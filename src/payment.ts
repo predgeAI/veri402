@@ -23,6 +23,9 @@ export const X402_VERSION = 1;
 
 export type SettlementMode = "authorization" | "base-sepolia";
 
+/** Settlement network label. Defaults to Arc (Circle's stablecoin L1). */
+export const NETWORK = process.env.NETWORK ?? "arc-testnet";
+
 export interface PaymentRequirement {
   scheme: "exact";
   network: string; // e.g. "base-sepolia"
@@ -64,6 +67,12 @@ export interface PaymentPayload {
 
 const USDC_BASE_SEPOLIA = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
 
+/** USDC handle per network. Base Sepolia is a concrete testnet contract; on Arc
+ *  we carry the symbol rather than assert an unverified address. */
+function usdcFor(network: string): string {
+  return network === "base-sepolia" ? USDC_BASE_SEPOLIA : "USDC";
+}
+
 export function buildRequirement(opts: {
   resource: string;
   description: string;
@@ -72,16 +81,17 @@ export function buildRequirement(opts: {
   network?: string;
   nonce: string;
 }): PaymentRequirement {
+  const network = opts.network ?? NETWORK;
   return {
     scheme: "exact",
-    network: opts.network ?? "base-sepolia",
+    network,
     maxAmountRequired: opts.amount,
     resource: opts.resource,
     description: opts.description,
     mimeType: "application/json",
     payTo: opts.payTo,
     maxTimeoutSeconds: 120,
-    asset: USDC_BASE_SEPOLIA,
+    asset: usdcFor(network),
     nonce: opts.nonce,
   };
 }

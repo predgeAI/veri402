@@ -1,7 +1,8 @@
 # Veri402
 
-**Agents pay per call in USDC over x402 — and cryptographically verify the data they get back.**
-No account, no API key, no trusting the server. Built from scratch for **ETHOnline 2026**.
+**Agents pay per call in USDC over x402 on Arc — and cryptographically verify the data they get back.**
+No account, no API key, no trusting the server. The trust layer the agentic economy is
+missing. Built from scratch for **ETHOnline 2026** (Arc / Circle Agent Stack track).
 
 x402 already lets an agent *pay* for an HTTP call. But it stops at "payment sent" —
 nothing proves the bytes the agent received are the bytes the seller actually served,
@@ -74,9 +75,20 @@ npm run agent -- wallet-score:0xA1c3F00d --tamper   # verification fails, as it 
 | `src/agent.ts`   | agent CLI: pay → receive → verify offline |
 | `public/`        | web demo (in‑browser WebCrypto verification) |
 
+## Arc / Circle fit
+
+Veri402 is an **agentic-economy** primitive on Circle's stack: an autonomous agent
+authorizes a USDC payment over **x402**, settles on **Arc** (Circle's stablecoin L1,
+default `NETWORK=arc-testnet`), and gets back data it can trust without trusting the
+seller. It's the missing verification layer on top of agent payments — conditional,
+multi-step money flows can gate on *proven* data, not asserted data.
+
+Settlement network is configurable (`NETWORK`, `SETTLE`); `SETTLE=base-sepolia` is the
+opt-in concrete on-chain testnet path.
+
 ## Stack
 
 TypeScript · Express · [`@noble/ed25519`](https://github.com/paulmillr/noble-ed25519) ·
-WebCrypto `Ed25519` in the browser · x402 · Circle USDC (Base Sepolia).
+WebCrypto `Ed25519` in the browser · x402 · Arc · Circle USDC.
 
 MIT.
